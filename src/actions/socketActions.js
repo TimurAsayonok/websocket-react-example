@@ -1,0 +1,9 @@
+const USER_CONNECTED = 'USER_CONNECTED';
+const LOGOUT = 'LOGOUT';
+const VERIFY_USER = 'VERIFY_USER'
+
+module.exports = {
+  USER_CONNECTED,
+  LOGOUT,
+  VERIFY_USER
+}

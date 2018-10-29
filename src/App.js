@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
 
+import * as socketActions from './actions/socketActions';
 import Layout from './components/Layout';
 
 const socketUrl = "http://192.168.1.20:3001/";
@@ -9,7 +10,8 @@ class App extends Component {
     super(props);
 
     this.state = {
-      socket: null
+      socket: null, 
+      user: null
     }
   }
 
@@ -18,13 +20,18 @@ class App extends Component {
   }
 
   render() {
+    const { socket } = this.state;
     return (
       <Layout 
-        title="Chat"
+        socket={socket}
+        onSetUser={this.onSetUser}
       />
     );
   }
 
+  /**
+   * Connect and initializes the socket
+   */
   onInitSocket = () => {
     const socket = io(socketUrl);
     socket.on('connect', () => {
@@ -32,6 +39,27 @@ class App extends Component {
     })
 
     this.setState({ socket });
+  }
+
+
+  /**
+   * Set the user property in state
+   */
+
+  onSetUser = (user) => {
+    const { socket } = this.state;
+
+    socket.emit(socketActions.USER_CONNECTED, user);
+    this.setState({ user })
+  }
+
+  /**
+  * Set the user property in stаte to null
+  */
+  onLogout = () => {
+    const { socket } = this.state;
+    socket.emit(socketActions.LOGOUT);
+    this.setState({ user: null });
   }
 }
 

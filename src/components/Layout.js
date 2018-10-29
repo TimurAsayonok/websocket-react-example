@@ -1,14 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
+import LoginForm from './LoginForm';
 
-class Layout extends Component {
-  render() {
-    const { title } = this.props;
-    return (
-      <div className="container">
-        <p>{title}</p>
-      </div>
-    )
-  }
+const Layout = (props) => {
+  const { socket, onsSetUser } = props;
+  return (
+    <div className="container">
+      <LoginForm
+        socket={socket}
+        onSetUser={onsSetUser}
+      />
+    </div>
+  )
 }
 
 export default Layout;
