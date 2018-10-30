@@ -1,8 +1,8 @@
 const io = require('./index.js').io;
 const { USER_CONNECTED, LOGOUT, VERIFY_USER } = require('../actions/socketActions');
-const { createUser } = require('../factories/userFactory');
+const { createUser } = require('./factories/userFactory');
 
-const connectedUser = {}
+let connectedUsers = {}
 
 module.exports = function(socket) {
   console.log("Socket: ");
@@ -10,7 +10,7 @@ module.exports = function(socket) {
 
   //verify username
   socket.on(VERIFY_USER, (name, callback) => {
-    if (isUser) {
+    if (isUser(connectedUsers, name)) {
       callback({ name: null, isUser: true})
     } else {
       callback({
@@ -19,6 +19,10 @@ module.exports = function(socket) {
     }
   })
   //User connects with username
+  socket.on(USER_CONNECTED, (user) => {
+    connectedUsers = addUser(connectedUsers, user);
+    socket.user = user;
+  })
 
   //User disconnects
 
@@ -34,5 +38,32 @@ module.exports = function(socket) {
 */
 
 function addUser(userList, user) {
+  const newList = { ...userList };
+  newList[user.name] = user;
 
+  return newList;
+}
+
+/*
+* Removes user from the list of users
+* @param userList { Object }
+* @param username { String }
+* @return userList { Object }
+*/
+
+function removeUser(userList, username) {
+  const newList = userList.filter(user => user.name !== username);
+
+  return newList;
+}
+
+/*
+* Checks if the user is in a list passed in
+* @param userList { Object }
+* @param username { String }
+* @return userList { Object }
+*/
+
+function isUser(userList, username) {
+  return username in userList;
 }

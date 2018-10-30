@@ -13,6 +13,7 @@ class LoginForm extends Component {
 
   render() {
     const { name, error } = this.state;
+
     return (
       <div className="login">
         <form
@@ -59,6 +60,7 @@ class LoginForm extends Component {
       this.setError("User name taken");
     } else {
       this.props.onSetUser(user);
+      this.setError(null);
     }
   }
 

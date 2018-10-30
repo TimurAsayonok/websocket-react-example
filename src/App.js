@@ -20,11 +20,14 @@ class App extends Component {
   }
 
   render() {
-    const { socket } = this.state;
+    const { socket, user } = this.state;
+
     return (
       <Layout 
         socket={socket}
         onSetUser={this.onSetUser}
+        onLogout={this.onLogout}
+        user={user}
       />
     );
   }
@@ -48,6 +51,7 @@ class App extends Component {
 
   onSetUser = (user) => {
     const { socket } = this.state;
+    console.log('onSetUser', user);
 
     socket.emit(socketActions.USER_CONNECTED, user);
     this.setState({ user })
@@ -56,7 +60,7 @@ class App extends Component {
   /**
   * Set the user property in stаte to null
   */
-  onLogout = () => {
+  onLogout = (user) => {
     const { socket } = this.state;
     socket.emit(socketActions.LOGOUT);
     this.setState({ user: null });
