@@ -12,14 +12,14 @@ const uuidv4 = require('uuid/v4');
 
 const createMessage = ({ message = "", sender = "" } = {}) => ({
   id: uuidv4(),
-  time: getTime(new Date(Date.now())),
+  time: new Date(),
   message,
   sender
 });
 
-const getTime = (date) => (
-  `${date.getHourse()}:${("0" + date.getMinutes()).slice(-2)}`
-);
+// const getTime = (date) => (
+//   `${date.getHourse()}:${("0" + date.getMinutes()).slice(-2)}`
+// );
 
 
 module.exports = {

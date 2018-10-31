@@ -1,12 +1,26 @@
 const io = require('./index.js').io;
-const { USER_CONNECTED, LOGOUT, VERIFY_USER } = require('../actions/socketActions');
+const { 
+  USER_CONNECTED,
+  LOGOUT,
+  VERIFY_USER,
+  COMMUNITY_CHAT,
+  USER_DISCONNECTED,
+  MESSAGE_RECIEVED,
+  MESSAGE_SENT,
+  TYPING
+} = require('../actions/socketActions');
 const { createUser } = require('./factories/userFactory');
+const { createChat } = require('./factories/chatFactory');
+const { createMessage } = require('./factories/messageFactory');
 
 let connectedUsers = {}
+let communityChat = createChat();
 
 module.exports = function(socket) {
   console.log("Socket: ");
   console.log(socket.id);
+  let sendMessageToChatFromUser;
+  let sendTypingFromUser;
 
   //verify username
   socket.on(VERIFY_USER, (name, callback) => {
@@ -22,12 +36,40 @@ module.exports = function(socket) {
   socket.on(USER_CONNECTED, (user) => {
     connectedUsers = addUser(connectedUsers, user);
     socket.user = user;
+
+    io.emit(USER_CONNECTED, connectedUsers);
+    sendMessageToChatFromUser = sendMessageToChat(user);
+    sendTypingFromUser = sendTypingToChat(user);
   })
 
-  //User disconnects
+  // get community chat
+  socket.on(COMMUNITY_CHAT, (callback) => {
+    callback(communityChat)
+  });
+
+  // User disconnects
+  socket.on('disconnect', () => {
+    if("user" in socket) {
+      console.log(socket.user.name);
+      connectedUsers = removeUser(connectedUsers, socket.user.name);
+      io.emit(USER_DISCONNECTED, connectedUsers);
+      console.log(connectedUsers)
+    }
+  });
 
   //User logouts
+  socket.on(LOGOUT, () => {
+    connectedUsers = removeUser(connectedUsers, socket.user.name);
+    io.emit(USER_DISCONNECTED, connectedUsers);
+  });
 
+  socket.on(MESSAGE_SENT, ({ chatId, message }) => {
+    sendMessageToChatFromUser(chatId, message);
+  })
+
+  socket.on(TYPING, ({ chatId, isTyping}) => {
+    sendTypingFromUser(chatId, isTyping);
+  })
 }
 
 /*
@@ -52,8 +94,8 @@ function addUser(userList, user) {
 */
 
 function removeUser(userList, username) {
-  const newList = userList.filter(user => user.name !== username);
-
+  const newList = { ...userList };
+  delete newList[username];
   return newList;
 }
 
@@ -66,4 +108,16 @@ function removeUser(userList, username) {
 
 function isUser(userList, username) {
   return username in userList;
+}
+
+function sendMessageToChat(sender) {
+  return (chatId, message) => {
+    io.emit(`${MESSAGE_RECIEVED}-${chatId}`, createMessage({ message, sender }));
+  }
+}
+
+function sendTypingToChat(user) {
+  return (chatId, isTyping) => {
+    io.emit(`${TYPING}-${chatId}`, { isTyping, user });
+  }
 }

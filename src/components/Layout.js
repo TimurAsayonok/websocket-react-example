@@ -7,7 +7,6 @@ import ChatComponent from './chat/ChatComponent'
 
 const Layout = (props) => {
   const { socket, onSetUser, user, onLogout } = props;
-  console.log("Layout:", user)
   return (
     <div className="container">
       {

@@ -10,7 +10,7 @@ import { MdEject } from 'react-icons/md';
 class SideBar extends Component {
 
   render() {
-    const { onLogout, chats, user, activeChat, onSetActiveChat, name } = this.props;
+    const { onLogout, chats, user, activeChat, onSetActiveChat } = this.props;
 
     return (
       <div id="side-bar">
@@ -35,7 +35,7 @@ class SideBar extends Component {
           }
         >
           {
-            !_.isEmpty(chats) && chats.map((chat) => {
+            chats.map((chat) => {
               if(chat.name) {
                 const lastMessage = chat.messages[chat.messages.lenght - 1];
                 const user = chat.users.find(({ name }) => {

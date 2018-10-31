@@ -51,8 +51,8 @@ class ChatComponent extends Component {
                   typingUsers={activeChat.typingUsers}
                 />
                 <MessageInput
-                  onSendMessage={this.onSendMessage}
-                  onSendTyping={this.onSendTyping}
+                  onSendMessage={(message) => this.onSendMessage(activeChat.id, message)}
+                  onSendTyping={(isTyping) => this.onSendTyping(activeChat.id, isTyping)}
                 />
               </div>
             )
@@ -88,7 +88,7 @@ class ChatComponent extends Component {
     const typingEvent = `${socketActions.TYPING}-${chat.id}`;
 
     socket.on(messageEvent, this.onAddMessageToChat(chat.id));
-    socket.on()
+    socket.on(typingEvent, this.onUpdateTypingInChat(chat.id))
   }
 
   /** Returns a function that will
@@ -109,19 +109,39 @@ class ChatComponent extends Component {
   }
 
 
-
-  onSendMessage = (message) => {
+  onSendMessage = (chatId, message) => {
     const { socket } = this.props;
-    const { activeChat } = this.state;
 
-    socket.emit(socketActions.MESSAGE_SENT, { chatId: activeChat.id, message})
+    socket.emit(socketActions.MESSAGE_SENT, { chatId, message})
   }
 
-  onSendTyping = (isTyping) => {
+  onUpdateTypingInChat = (chatId) => {
+    return ({ isTyping, user }) => {
+      if(user !== this.props.user.name) {
+        const { chats } = this.state;
+        const newChats = chats.map((chat) => {
+          if(chat.id === chatId) {
+            if(isTyping && !chat.typingUsers.includes(user)) {
+              chat.typingUsers.push(user)
+            } else if(!isTyping && chat.typingUsers.includes(user)){
+              chat.typingUsers = chat.typingUsers.filter(_user => _user !==  user)
+            }
+          }
+          return chat;
+        })
+
+        this.setState({
+          chat: newChats
+        })
+      }
+    }
+  }
+
+  onSendTyping = (chatId, isTyping) => {
     const { socket } = this.props;
     const { activeChat } = this.state;
 
-    socket.emit(socketActions.TYPING, { chatId: activeChat.id, isTyping })
+    socket.emit(socketActions.TYPING, { chatId, isTyping })
   }
 }
 
