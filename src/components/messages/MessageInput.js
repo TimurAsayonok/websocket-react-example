@@ -20,7 +20,7 @@ class MessageInput extends Component {
   render() {
     const { message } = this.state;
     return (
-      <div id="message-input">
+      <div id="message-input" className="send-input-container footer">
         <form
           onSubmit={this.onHadleSubmit}
           className="message-form"
@@ -29,20 +29,13 @@ class MessageInput extends Component {
             id="message"
             ref={"messageinput"}
             type="text"
-            className="form-control"
+            className="send-input w-100 py-3 px-3"
             value={message}
             autoComplete={'off'}
             placeholder="Type your message"
             onKeyUp={ event => event.keyCode !== 13 && this.onSendTyping()}
             onChange={ event => this.onChange(event.target.value)}
           />
-          <button
-            disabled={message.lenght < 1}
-            type="submit"
-            className="send"
-          >
-            Send
-          </button>
         </form>
       </div>
     )

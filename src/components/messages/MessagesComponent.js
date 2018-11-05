@@ -15,8 +15,8 @@ class MessagesComponent extends Component {
     return (
       <div
         kef="container"
-        className="thread-container">
-        <div className="thread">
+        className="thread-container h-100">
+        <div className="thread h-100">
           {
             messages.map((message) => {
               return (

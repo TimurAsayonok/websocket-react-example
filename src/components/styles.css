@@ -1,9 +1,19 @@
 html {
   background-color: #e7ebf0;
+  height: 100%;
 }
 
 body {
   background-color: transparent !important;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+.layout {
+  height: 100%;
 }
 
 .login {
@@ -41,3 +51,96 @@ body {
   font-size: 12px;
   color: #ccc
 }
+
+#chats {
+  height: 100%;
+}
+
+#side-bar {
+  background-color: #fff;
+  padding: 0;
+  height: 100%;
+}
+
+#side-bar .side-bar-heading {
+  border-bottom: 1px solid #ccc;
+}
+
+#side-bar .search-input {
+  width: 100%;
+  background-color: #f1f1f1;
+  border: 1px solid #f1f1f1;
+  border-radius: 5px;
+  padding: 5px;
+  color: #999CAC;
+}
+
+#side-bar .search-input:focus {
+  background-color: #FFF;
+}
+
+.menu-button {
+  color: #a8a8a8;
+  padding: 5px;
+  font-size: 20px;
+}
+
+#side-bar .current-user {
+  background-color: #f1f1f1;
+  height: 60px;
+}
+
+#side-bar .logout:hover {
+  cursor: pointer;
+}
+
+#side-bar .user.activeChat {
+  background-color: #f1f1f1;
+}
+
+#side-bar .user:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+#side-bar .user.activeChat:hover {
+  background-color: #f1f1f1;
+}
+
+#side-bar .user-photo {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  border-radius: 50%;
+  background-color: #6c757d;
+  color: #fff;
+}
+
+#side-bar .last-message {
+  color: #c9c9c9;
+}
+
+/* Chat room */
+#chatRoom {
+  padding: 0;
+}
+
+#chatRoom .header-chat {
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+}
+
+#chatRoom .options-icon {
+  color: #a8a8a8;
+  padding: 5px;
+  font-size: 20px;
+}
+
+#chatRoom .send-input-container {
+  background-color: #fff;
+}
+
+#chatRoom .send-input {
+  border: 0;
+} 

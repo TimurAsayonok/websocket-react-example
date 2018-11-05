@@ -23,7 +23,7 @@ class LoginForm extends Component {
         <div className="d-flex login-header"></div>
         <div className="login-form p-1">
           <div className="login-form-header py-3">
-            <p>Telegram copy-test</p>
+            <p>Chat test project</p>
           </div>
           <Form
             onSubmit={this.handleSubmit}

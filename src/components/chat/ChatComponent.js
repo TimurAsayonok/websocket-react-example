@@ -30,7 +30,7 @@ class ChatComponent extends Component {
     const { chats, activeChat } = this.state;
 
     return (
-      <div className="container">
+      <div id="chats" className="d-flex flex-row">
         <SideBar
           onLogout={onLogout}
           chats={chats}
@@ -38,10 +38,10 @@ class ChatComponent extends Component {
           activeChat={activeChat}
           onSetActiveChat={this.onSetActiveChat}
         />
-        <div className="chat-room-container">
+        <div id="chatRoom" className="chat-room-container col-9">
           {
             activeChat !== null ? (
-              <div className="chat-room">
+              <div className="d-flex flex-column chat-room h-100">
                 <ChatHeader
                   name={activeChat.name}
                 />
@@ -56,7 +56,7 @@ class ChatComponent extends Component {
                 />
               </div>
             )
-            : <div className="chat-room choose">
+              : <div className="d-flex  h-100 justify-content-center align-items-center chat-room-choose">
               <h3>Choose a chat!</h3>
             </div>
           }
