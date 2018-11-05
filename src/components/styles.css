@@ -1,0 +1,43 @@
+html {
+  background-color: #e7ebf0;
+}
+
+body {
+  background-color: transparent !important;
+}
+
+.login {
+  height: 800px;
+}
+
+.login-header {
+  background-color: #5682a3;
+  height: 28%;
+}
+
+.login-form {
+  margin: -120px auto;
+  max-width: 404px;
+}
+
+.login-form-header {
+  color: #fff;
+}
+
+.login-form-body {
+  background-color: #fff;
+}
+
+.form-lable {
+  font-size: 14px;
+  color: #ccc
+}
+
+.button-login {
+  border-radius: 0 !important;
+}
+
+.description {
+  font-size: 12px;
+  color: #ccc
+}

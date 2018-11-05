@@ -8,7 +8,7 @@ import ChatComponent from './chat/ChatComponent'
 const Layout = (props) => {
   const { socket, onSetUser, user, onLogout } = props;
   return (
-    <div className="container">
+    <div className="layout">
       {
         !user
           ? <LoginForm
