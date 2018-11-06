@@ -1,8 +1,4 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
-
-import { FaSearch } from 'react-icons/fa';
-import { MdEject } from 'react-icons/md';
 
 
 // import * as socketActions from '../../../actions/socketActions';
@@ -15,6 +11,10 @@ class MessageInput extends Component {
       message: "", 
       isTyping: false
     }
+  }
+
+  componentWillUnmount() {
+    this.onStopCheckingTyping();
   }
 
   render() {
@@ -47,11 +47,16 @@ class MessageInput extends Component {
 
   onSendTyping = () => {
     const { onSendTyping } = this.props;
-    this.setState({
-      isTyping: true
-    })
+    this.lastUpdateTime = Date.now();
 
-    onSendTyping(this.state.isTyping);
+    if (!this.state.isTyping) {
+      this.setState({
+        isTyping: true
+      })
+
+      onSendTyping(true);
+      this.onStartCheckingTyping();
+    }
   }
 
   onHadleSubmit = (event) => {
@@ -60,11 +65,33 @@ class MessageInput extends Component {
     const { onSendMessage } = this.props;
     const { message } = this.state;
 
-    onSendMessage(message);
-    this.setState({
-      message: '',
-      isTyping: false
-    });
+    if (message.length > 0) {
+      onSendMessage(message);
+      this.setState({
+        message: '',
+        isTyping: false
+      });
+    }
+  }
+
+  onStartCheckingTyping = () => {
+    console.log("typing");
+    this.typingInterval = setInterval(() => {
+      if ((Date.now() - this.lastUpdateTime) > 300) {
+        this.setState({
+          isTyping: false
+        });
+        this.onStopCheckingTyping();
+      }
+    }, 300)
+  }
+
+  onStopCheckingTyping = () => {
+    console.log("Stop typing");
+    if (this.typingInterval) {
+      clearInterval(this.typingInterval);
+      this.props.onSendTyping(false);
+    }
   }
 }
 

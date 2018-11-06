@@ -118,6 +118,6 @@ function sendMessageToChat(sender) {
 
 function sendTypingToChat(user) {
   return (chatId, isTyping) => {
-    io.emit(`${TYPING}-${chatId}`, { isTyping, user });
+    io.emit(`${TYPING}-${chatId}`, { user, isTyping });
   }
 }

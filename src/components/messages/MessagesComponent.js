@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
+import moment from 'moment';
 
 import { FaSearch } from 'react-icons/fa';
 import { MdEject } from 'react-icons/md';
@@ -9,12 +9,19 @@ import { MdEject } from 'react-icons/md';
 
 class MessagesComponent extends Component {
 
+  componentDidMount() {
+    this.onScrollDown();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this.onScrollDown();
+  }
 
   render() {
     const { messages, user, typingUsers } = this.props;
     return (
       <div
-        kef="container"
+        ref={"container"}
         className="thread-container h-100">
         <div className="thread h-100">
           {
@@ -22,27 +29,43 @@ class MessagesComponent extends Component {
               return (
                 <div
                   key={message.id}
-                  className={`message-container ${message.sender.name === user.name && 'right'}`}
+                  className={
+                    `message-container ${
+                      message.sender.name === user.name
+                      ? 'right d-flex flex-column align-items-end'
+                      : 'left d-flex flex-column align-items-start'
+                    }`
+                  }
                 >
-                  <div className="time">{message.time}</div>
                   <div className="data">
-                    <div className="message">{message.message}</div>
-                    <div className="name">{message.sender.name}</div>
+                    <div className="message">
+                      {message.message}
+                      <div className="time">{moment(message.time).format('DD.MM.YYYY, HH:MM')}</div>
+                    </div>
+                    { 
+                      user.id !== message.sender.id && <div className="name">{message.sender.name}</div>
+                    }
                   </div>
                 </div>
               )
             })
           }
           {
-            typingUsers.map((name, index) => {
+            typingUsers.map((user, index) => {
               return <div key={index} className="typing-user">
-                {`${name} is typing...`}
+                {`${user.name} is typing...`}
               </div>
             })
           }
         </div>
       </div>
     )
+  }
+
+  onScrollDown = () => {
+    const { container } = this.refs;
+
+    container.scrollTop = container.scrollHeight;
   }
 }
 

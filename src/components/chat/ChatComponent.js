@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import _ from 'lodash';
 
 //components
 import SideBar from './SideBar';
@@ -116,15 +116,15 @@ class ChatComponent extends Component {
   }
 
   onUpdateTypingInChat = (chatId) => {
-    return ({ isTyping, user }) => {
-      if(user !== this.props.user.name) {
+    return ({ user, isTyping }) => {
+      if(user.id !== this.props.user.id) {
         const { chats } = this.state;
         const newChats = chats.map((chat) => {
           if(chat.id === chatId) {
-            if(isTyping && !chat.typingUsers.includes(user)) {
+            if (isTyping && !_.find(chat.typingUsers, (_user) => _user.id === user.id)) {
               chat.typingUsers.push(user)
-            } else if(!isTyping && chat.typingUsers.includes(user)){
-              chat.typingUsers = chat.typingUsers.filter(_user => _user !==  user)
+            } else if (!isTyping && !!_.find(chat.typingUsers, (_user) => _user.id === user.id)){
+              chat.typingUsers = chat.typingUsers.filter(_user => _user.id !==  user.id)
             }
           }
           return chat;
