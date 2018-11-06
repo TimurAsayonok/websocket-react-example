@@ -18,7 +18,7 @@ class SideBar extends Component {
         </div>
 
         <div
-          className="d-flex flex-column users h-100"
+          className="d-flex flex-column users h-100 w-100"
           ref='users'
           onClick={(e) => {
             (e.target === this.refs.user) && onSetActiveChat(null)
@@ -34,18 +34,17 @@ class SideBar extends Component {
                 }) || { name: 'Community' }
                 const className = (activeChat && activeChat.id === chat.id) ? 'activeChat' : '';
 
-                console.log(lastMessage);
                 return (
                   <div
                     key={chat.id}
-                    className={`d-flex user ${className} px-3 py-2 mb-2`}
+                    className={`d-flex align-items-center user ${className} px-3 py-2 mb-2 w-100`}
                     onClick={() => onSetActiveChat(chat)}
                   >
                     <div className="d-flex justify-content-center align-items-center user-photo ">
-                      {user.name[0].toUpperCase()}
+                      {`${user.name[0].toUpperCase()}${user.name[user.name.length - 1].toUpperCase()}`}
                     </div>
-                    <div className="d-flex flex-column justify-content-center mx-2 user-info">
-                      <div>{user.name}</div>
+                    <div className="w-100 d-flex flex-column justify-content-center mx-2 user-info">
+                      <div className="chat-name">{user.name}</div>
                       {lastMessage && lastMessage.message && <div className="last-message">
                         {lastMessage.message}
                       </div>}
