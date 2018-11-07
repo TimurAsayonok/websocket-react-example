@@ -134,6 +134,14 @@ body {
     font-size: 12px;
 }
 
+#side-bar .menu-button:hover {
+  cursor: pointer;
+}
+
+#side-bar .dropdown-item:hover {
+  cursor: pointer;
+}
+
 
 
 /* Chat room */

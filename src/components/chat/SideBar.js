@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 import { FaBars } from 'react-icons/fa';
 import { MdEject } from 'react-icons/md';
@@ -8,7 +9,8 @@ class SideBar extends Component {
     super(props);
 
     this.state = {
-      receiver: ''
+      receiver: '',
+      dropdownOpen: false
     }
   }
 
@@ -30,7 +32,21 @@ class SideBar extends Component {
               this.setState({ receiver: ''})
             }}
           >
-            <i className="menu-button"><FaBars /></i>
+            <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggleMenu}>
+              <DropdownToggle
+                tag="span"
+                onClick={this.toggle}
+                data-toggle="dropdown"
+                aria-expanded={this.state.dropdownOpen}
+                className="menu-button"
+              >
+                <FaBars />
+              </DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem>Create Chat</DropdownItem>
+                <DropdownItem>Create Group</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
             <input
               className="search-input mx-2"
               placeholder="Search"
@@ -56,7 +72,6 @@ class SideBar extends Component {
                 const chatName = chat.users.find((name) => {
                   return name !== user.name
                 }) || 'Community';
-                console.log('CHAT NAME: ', chatName);
                 const className = (activeChat && activeChat.id === chat.id) ? 'activeChat' : '';
                 return (
                   <div
@@ -94,6 +109,12 @@ class SideBar extends Component {
         </div>
       </div>
     )
+  }
+
+  toggleMenu = () => {
+    this.setState(prevState => ({
+      dropdownOpen: !prevState.dropdownOpen
+    }));
   }
 }
 
