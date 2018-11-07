@@ -15,10 +15,9 @@ const ChatHeader = ({ name, numberOfUsers }) => {
       <div className="mx-3 d-flex justify-content-between align-items-center">
         <div className="user-info">
           <div className="user-name">{name}</div>
-          <div className="status">
-            <div className="indicator"></div>
-            <span>{numberOfUsers ? numberOfUsers : null}</span>
-          </div>
+          {/* <div className="status">
+            <div className="indicator">{numberOfUsers ? numberOfUsers : null}</div>
+          </div> */}
         </div>
         <i className="options-icon"><FaEllipsisV /></i>
       </div>

@@ -40,7 +40,6 @@ class App extends Component {
     socket.on('connect', () => {
       console.log('React socket connected');
     })
-
     this.setState({ socket });
   }
 

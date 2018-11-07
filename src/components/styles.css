@@ -129,6 +129,11 @@ body {
   white-space: nowrap;
 }
 
+#side-bar .status {
+  height: 15px;
+    font-size: 12px;
+}
+
 
 
 /* Chat room */

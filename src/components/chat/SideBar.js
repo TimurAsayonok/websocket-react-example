@@ -4,17 +4,41 @@ import { FaBars } from 'react-icons/fa';
 import { MdEject } from 'react-icons/md';
 
 class SideBar extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      receiver: ''
+    }
+  }
 
   render() {
-    const { onLogout, chats, user, activeChat, onSetActiveChat } = this.props;
+    const {
+      onLogout, chats, user, activeChat, onSetActiveChat,
+      onSendOpenPrivateMessage
+    } = this.props;
+    const { receiver } = this.state;
 
     return (
       <div id="side-bar" className="d-flex flex-column col-3">
         <div className="side-bar-heading py-3">
-          <div className="d-flex flex-row search mx-3">
+          <form
+            className="d-flex flex-row search mx-3"
+            onSubmit={(event) => {
+              event.preventDefault();
+              onSendOpenPrivateMessage(receiver)
+              this.setState({ receiver: ''})
+            }}
+          >
             <i className="menu-button"><FaBars /></i>
-            <input className="search-input mx-2" placeholder="Search" type="text" />
-          </div>
+            <input
+              className="search-input mx-2"
+              placeholder="Search"
+              type="text"
+              value={receiver}
+              onChange={(e) => this.setState({ receiver: e.target.value })}
+            />
+          </form>
         </div>
 
         <div
@@ -29,11 +53,11 @@ class SideBar extends Component {
             chats.map((chat) => {
               if (chat.name) {
                 const lastMessage = chat.messages[chat.messages.length - 1];
-                const user = chat.users.find(({ name }) => {
-                  return name !== this.props.name
-                }) || { name: 'Community' }
+                const chatName = chat.users.find((name) => {
+                  return name !== user.name
+                }) || 'Community';
+                console.log('CHAT NAME: ', chatName);
                 const className = (activeChat && activeChat.id === chat.id) ? 'activeChat' : '';
-
                 return (
                   <div
                     key={chat.id}
@@ -41,10 +65,10 @@ class SideBar extends Component {
                     onClick={() => onSetActiveChat(chat)}
                   >
                     <div className="d-flex justify-content-center align-items-center user-photo ">
-                      {`${user.name[0].toUpperCase()}${user.name[user.name.length - 1].toUpperCase()}`}
+                      {`${chatName[0].toUpperCase()}${chatName[chatName.length - 1].toUpperCase()}`}
                     </div>
                     <div className="w-100 d-flex flex-column justify-content-center mx-2 user-info">
-                      <div className="chat-name">{user.name}</div>
+                      <div className="chat-name">{chatName}</div>
                       {lastMessage && lastMessage.message && <div className="last-message">
                         {lastMessage.message}
                       </div>}

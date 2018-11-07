@@ -15,19 +15,19 @@ class ChatComponent extends Component {
 
     this.state = {
       chats: [],
-      activeChat: null
+      activeChat: null,
+      connectedUsers: []
     }
   }
 
   componentDidMount() {
     const { socket } = this.props;
-
-    socket.emit(socketActions.COMMUNITY_CHAT, this.onResetChat)
+    this.initSocket(socket);
   }
 
   render() {
     const { onLogout, user } = this.props;
-    const { chats, activeChat } = this.state;
+    const { chats, activeChat, connectedUsers } = this.state;
 
     return (
       <div id="chats" className="d-flex flex-row">
@@ -37,6 +37,7 @@ class ChatComponent extends Component {
           user={user}
           activeChat={activeChat}
           onSetActiveChat={this.onSetActiveChat}
+          onSendOpenPrivateMessage={this.onSendOpenPrivateMessage}
         />
         <div id="chatRoom" className="chat-room-container col-9">
           {
@@ -44,6 +45,7 @@ class ChatComponent extends Component {
               <div className="d-flex flex-column chat-room h-100">
                 <ChatHeader
                   name={activeChat.name}
+                  numberOfUsers={activeChat.users.length}
                 />
                 <MessageComponent
                   messages={activeChat.messages}
@@ -65,6 +67,26 @@ class ChatComponent extends Component {
     )
   }
 
+  initSocket = (socket) => {
+    socket.emit(socketActions.COMMUNITY_CHAT, this.onResetChat);
+    socket.on(socketActions.PRIVATE_MESSAGE, this.onAddChat);
+    socket.on('connect', () => {
+      // socket.emit(socket.USER_CONNECTED, this.props.user);
+      socket.emit(socketActions.COMMUNITY_CHAT, this.onResetChat)
+    });
+
+    socket.on(socketActions.USER_CONNECTED, (connectedUsers) => {
+      this.setState({
+        users: connectedUsers
+      })
+    });
+  }
+
+  onSendOpenPrivateMessage = (receiver) => {
+    const { socket, user } = this.props;
+    socket.emit(socketActions.PRIVATE_MESSAGE, { receiver, sender: user.name })
+  }
+
   onSetActiveChat = (chat) => {
     this.setState({
       activeChat: chat
@@ -75,7 +97,7 @@ class ChatComponent extends Component {
     return this.onAddChat(chat, true);
   }
 
-  onAddChat = (chat, reset) => {
+  onAddChat = (chat, reset = false) => {
     const { socket } = this.props;
     const { chats } = this.state;
 

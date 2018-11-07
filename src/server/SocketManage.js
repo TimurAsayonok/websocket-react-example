@@ -7,7 +7,8 @@ const {
   USER_DISCONNECTED,
   MESSAGE_RECIEVED,
   MESSAGE_SENT,
-  TYPING
+  TYPING,
+  PRIVATE_MESSAGE
 } = require('../actions/socketActions');
 const { createUser } = require('./factories/userFactory');
 const { createChat } = require('./factories/chatFactory');
@@ -28,18 +29,20 @@ module.exports = function(socket) {
       callback({ name: null, isUser: true})
     } else {
       callback({
-        isUser: false, user: createUser({ name })
+        isUser: false, user: createUser({ name, socketId: socket.id })
       })
     }
   })
   //User connects with username
   socket.on(USER_CONNECTED, (user) => {
+    user.socketId = socket.id;
     connectedUsers = addUser(connectedUsers, user);
     socket.user = user;
 
-    io.emit(USER_CONNECTED, connectedUsers);
     sendMessageToChatFromUser = sendMessageToChat(user);
     sendTypingFromUser = sendTypingToChat(user);
+
+    io.emit(USER_CONNECTED, connectedUsers);
   })
 
   // get community chat
@@ -63,12 +66,32 @@ module.exports = function(socket) {
     io.emit(USER_DISCONNECTED, connectedUsers);
   });
 
+  //event for getting message
   socket.on(MESSAGE_SENT, ({ chatId, message }) => {
     sendMessageToChatFromUser(chatId, message);
   })
 
+  //event for getting
   socket.on(TYPING, ({ chatId, isTyping}) => {
     sendTypingFromUser(chatId, isTyping);
+  })
+
+  socket.on(PRIVATE_MESSAGE, ({ receiver, sender }) => {
+    console.log(receiver, sender);
+    if (receiver in connectedUsers) {
+      console.log([receiver, sender])
+      const newChatForReceiver = createChat({
+        name: `${connectedUsers[receiver].name}&${connectedUsers[sender].name}`,
+        users: [receiver, sender]
+      });
+      const receiverSocket = connectedUsers[receiver].socketId;
+
+      //send message to recieverSocket socketId - will add chat for reciever web panel
+      socket.to(receiverSocket).emit(PRIVATE_MESSAGE, newChatForReceiver);
+
+      //send message to current socketId = sender.socketId - will add chat for sender web panel
+      socket.emit(PRIVATE_MESSAGE, newChatForReceiver)
+    }
   })
 }
 
